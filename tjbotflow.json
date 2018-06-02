@@ -1,0 +1,748 @@
+[
+  {
+    "id": "2ce4231d.fad5ec",
+    "type": "function",
+    "z": "17386d6d.4d0923",
+    "name": "Determine winner",
+    "func": "var tjbotPicks = ['r', 's', 'p'][Math.floor(Math.random()*3)];\n\nmsg.filename = tjbotPicks+msg.payload.substring(0,1);\nmsg.payload = {tjbot: tjbotPicks, player: msg.payload.substring(0,1)};\nmsg.event = \"rps\";\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 1270,
+    "y": 560,
+    "wires": [
+      [
+        "5446ee37.577218",
+        "c6c02404.b716f"
+      ]
+    ]
+  },
+  {
+    "id": "5446ee37.577218",
+    "type": "function",
+    "z": "17386d6d.4d0923",
+    "name": "Get from memory",
+    "func": "msg.payload = msg.filename;\nreturn msg;\n",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 1470,
+    "y": 560,
+    "wires": [
+      [
+        "e5411ffa.bf9928",
+        "150e0364.c53765"
+      ]
+    ]
+  },
+  {
+    "id": "e51035a5.37d038",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "params",
+        "pt": "msg",
+        "to": "{}",
+        "tot": "json"
+      },
+      {
+        "t": "set",
+        "p": "params.classifier_ids",
+        "pt": "msg",
+        "to": "[\"hand_1340742345\"]",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 400,
+    "y": 580,
+    "wires": [
+      [
+        "5b846534.b6165c"
+      ]
+    ]
+  },
+  {
+    "id": "5b846534.b6165c",
+    "type": "visual-recognition-v3",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "apikey": "",
+    "image-feature": "classifyImage",
+    "lang": "en",
+    "x": 590,
+    "y": 580,
+    "wires": [
+      [
+        "38d7d228.d9380e"
+      ]
+    ]
+  },
+  {
+    "id": "c1605f9a.3ff66",
+    "type": "function",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "func": "var classes = msg.result.images[0].classifiers[0].classes;\nvar top = classes[Object.keys(classes).reduce((a, b) => {\n  return classes[a].score > classes[b].score ? a : b\n})];\nmsg.payload = top;\nmsg.top = top;\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 870,
+    "y": 560,
+    "wires": [
+      [
+        "cd44c8e7.e1d478",
+        "b3879bdb.938648"
+      ]
+    ]
+  },
+  {
+    "id": "cd44c8e7.e1d478",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "payload.class",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 1080,
+    "y": 560,
+    "wires": [
+      [
+        "2ce4231d.fad5ec"
+      ]
+    ]
+  },
+  {
+    "id": "b7b328db.c013f8",
+    "type": "tjbot-see",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "takephoto",
+    "verticalFlip": true,
+    "horizontalFlip": true,
+    "width": "640",
+    "height": "480",
+    "name": "",
+    "x": 470,
+    "y": 340,
+    "wires": [
+      [
+        "ccf872fd.9d601",
+        "54bc6b43.60b66c",
+        "319df0b5.262238"
+      ]
+    ]
+  },
+  {
+    "id": "fb98eb1.5509818",
+    "type": "inject",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "topic": "",
+    "payload": "intro",
+    "payloadType": "str",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "x": 130,
+    "y": 220,
+    "wires": [
+      [
+        "5d8fb836.f60418"
+      ]
+    ]
+  },
+  {
+    "id": "ccf872fd.9d601",
+    "type": "file in",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "filename": "",
+    "format": "",
+    "x": 250,
+    "y": 580,
+    "wires": [
+      [
+        "e51035a5.37d038",
+        "924dfce9.54d678"
+      ]
+    ]
+  },
+  {
+    "id": "54bc6b43.60b66c",
+    "type": "debug",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "false",
+    "x": 650,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "150e0364.c53765",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "play",
+    "payload": "",
+    "name": "",
+    "x": 1630,
+    "y": 580,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "e5411ffa.bf9928",
+    "type": "debug",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "true",
+    "x": 1630,
+    "y": 540,
+    "wires": []
+  },
+  {
+    "id": "5d8fb836.f60418",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "play",
+    "payload": "rps",
+    "name": "",
+    "x": 330,
+    "y": 220,
+    "wires": [
+      [
+        "3a64f273.9d93de"
+      ]
+    ]
+  },
+  {
+    "id": "11476c8b.38bd43",
+    "type": "tjbot-wave",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "motion": "raisearm",
+    "name": "",
+    "x": 690,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "38d7d228.d9380e",
+    "type": "switch",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "property": "result.images[0].classifiers[0].classes.length",
+    "propertyType": "msg",
+    "rules": [
+      {
+        "t": "gt",
+        "v": "0",
+        "vt": "num"
+      },
+      {
+        "t": "else"
+      }
+    ],
+    "checkall": "true",
+    "outputs": 2,
+    "x": 750,
+    "y": 580,
+    "wires": [
+      [
+        "c1605f9a.3ff66"
+      ],
+      [
+        "79269b1c.09412c"
+      ]
+    ]
+  },
+  {
+    "id": "368f1d0f.3a7dba",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "speak",
+    "payload": "",
+    "name": "",
+    "x": 1050,
+    "y": 600,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "79269b1c.09412c",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "Sorry. Let's try it again.",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 900,
+    "y": 600,
+    "wires": [
+      [
+        "368f1d0f.3a7dba"
+      ]
+    ]
+  },
+  {
+    "id": "b3879bdb.938648",
+    "type": "debug",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "active": true,
+    "console": "false",
+    "complete": "top",
+    "x": 1060,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "e8784b84.f62d48",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "play",
+    "payload": "three",
+    "name": "",
+    "x": 330,
+    "y": 260,
+    "wires": [
+      [
+        "855594ff.cc32a"
+      ]
+    ]
+  },
+  {
+    "id": "9a4653f4.f75d9",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "play",
+    "payload": "two",
+    "name": "",
+    "x": 330,
+    "y": 300,
+    "wires": [
+      [
+        "989d9448.84004"
+      ]
+    ]
+  },
+  {
+    "id": "de87d8fb.dd5f1",
+    "type": "tjbot-wave",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "motion": "wave",
+    "name": "",
+    "x": 690,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "8c161401.505fb8",
+    "type": "tjbot-speak",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "play",
+    "payload": "one",
+    "name": "",
+    "x": 330,
+    "y": 340,
+    "wires": [
+      [
+        "b7b328db.c013f8",
+        "7160c4a6.a087d4"
+      ]
+    ]
+  },
+  {
+    "id": "779d6c5c.ccc694",
+    "type": "tjbot-wave",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "motion": "lowerarm",
+    "name": "",
+    "x": 690,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "3a64f273.9d93de",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "three",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 500,
+    "y": 220,
+    "wires": [
+      [
+        "e8784b84.f62d48",
+        "11476c8b.38bd43"
+      ]
+    ]
+  },
+  {
+    "id": "855594ff.cc32a",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "two",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 500,
+    "y": 260,
+    "wires": [
+      [
+        "9a4653f4.f75d9",
+        "de87d8fb.dd5f1"
+      ]
+    ]
+  },
+  {
+    "id": "989d9448.84004",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "one",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 500,
+    "y": 300,
+    "wires": [
+      [
+        "8c161401.505fb8",
+        "779d6c5c.ccc694"
+      ]
+    ]
+  },
+  {
+    "id": "1d1e0044.c3bea",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "intro",
+        "tot": "str"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 320,
+    "y": 160,
+    "wires": [
+      [
+        "5d8fb836.f60418"
+      ]
+    ]
+  },
+  {
+    "id": "c6c02404.b716f",
+    "type": "link out",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "links": [
+      "e37e2935.d0d0e8"
+    ],
+    "x": 1395,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "edbb640b.38784",
+    "type": "http request",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "method": "POST",
+    "ret": "obj",
+    "url": "https://myapp.mybluemix.net/picture",
+    "tls": "",
+    "x": 630,
+    "y": 460,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "924dfce9.54d678",
+    "type": "function",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "func": "msg.payload = Buffer.from(msg.payload).toString('base64');\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 450,
+    "y": 500,
+    "wires": [
+      [
+        "edbb640b.38784"
+      ]
+    ]
+  },
+  {
+    "id": "7160c4a6.a087d4",
+    "type": "tjbot-shine",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "shine",
+    "color": "red",
+    "duration": "",
+    "name": "",
+    "x": 360,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "319df0b5.262238",
+    "type": "tjbot-shine",
+    "z": "17386d6d.4d0923",
+    "botId": "f8520bfb.c0e508",
+    "mode": "shine",
+    "color": "off",
+    "duration": "",
+    "name": "",
+    "x": 660,
+    "y": 400,
+    "wires": []
+  },
+  {
+    "id": "5cb73cf9.cbf55c",
+    "type": "watson-text-to-speech",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "lang": "en-US",
+    "langhidden": "en-US",
+    "langcustom": "NoCustomisationSetting",
+    "langcustomhidden": "",
+    "voice": "en-US_MichaelVoice",
+    "voicehidden": "en-US_MichaelVoice",
+    "format": "audio/wav",
+    "password": "",
+    "payload-response": false,
+    "default-endpoint": true,
+    "service-endpoint": "",
+    "x": 420,
+    "y": 120,
+    "wires": [
+      [
+        "9e80790e.1948c"
+      ]
+    ]
+  },
+  {
+    "id": "9e80790e.1948c",
+    "type": "change",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "speech",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "filename",
+        "pt": "msg",
+        "to": "parts.key",
+        "tot": "msg"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 600,
+    "y": 120,
+    "wires": [
+      [
+        "b1c1d650.4237b"
+      ]
+    ]
+  },
+  {
+    "id": "c1dd39b2.e2f778",
+    "type": "inject",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "topic": "",
+    "payload": "{\"rps\": \"rock, paper, scissors\",  \"rp\": \"I chose rock. You chose paper. You win!\",  \"rs\":\"I chose rock. You chose scissors. I win!\",  \"rr\": \"We both chose rock. Tie!\",  \"ps\": \"I chose paper. You chose scissor. You win!\",  \"pr\":\"I chose paper. You chose rock. I win!\", \"pp\":\"We both chose paper. Tie!\", \"sp\":\"I chose scissors. You chose paper. I win!\", \"sr\":\"I chose scissor. You chose rock. You win!\", \"ss\":\"We both chose scissors. Tie!\", \"three\":\"Three\", \"two\":\"Two\", \"one\":\"One\", \"intro\":\"Hello! Let's play a game of rock paper scissors. The rules are as follows. Rock breaks scissors, scissors cuts paper, and paper covers rock. Ready? Let's go.\"}",
+    "payloadType": "json",
+    "repeat": "",
+    "crontab": "",
+    "once": false,
+    "x": 150,
+    "y": 120,
+    "wires": [
+      [
+        "6bed8a9d.aab254"
+      ]
+    ]
+  },
+  {
+    "id": "d3c9c90d.83278",
+    "type": "comment",
+    "z": "17386d6d.4d0923",
+    "name": "Get audio files for each phrase",
+    "info": "",
+    "x": 190,
+    "y": 60,
+    "wires": []
+  },
+  {
+    "id": "b1c1d650.4237b",
+    "type": "file",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "filename": "",
+    "appendNewline": true,
+    "createDir": false,
+    "overwriteFile": "true",
+    "x": 750,
+    "y": 120,
+    "wires": []
+  },
+  {
+    "id": "6bed8a9d.aab254",
+    "type": "split",
+    "z": "17386d6d.4d0923",
+    "name": "",
+    "splt": "\\n",
+    "x": 270,
+    "y": 120,
+    "wires": [
+      [
+        "5cb73cf9.cbf55c"
+      ]
+    ]
+  },
+  {
+    "id": "df4a923a.71d298",
+    "type": "wiotp in",
+    "z": "17386d6d.4d0923",
+    "authType": "d",
+    "deviceKey": "88250c17.de9188",
+    "deviceType": "",
+    "deviceId": "",
+    "command": "+",
+    "commandType": "g",
+    "qos": 0,
+    "name": "",
+    "x": 150,
+    "y": 160,
+    "wires": [
+      [
+        "1d1e0044.c3bea"
+      ]
+    ]
+  },
+  {
+    "id": "f8520bfb.c0e508",
+    "type": "tjbot-config",
+    "z": "",
+    "botGender": "male",
+    "name": "TJBot",
+    "listen": "",
+    "speak": "en-US",
+    "hasServo": true,
+    "hasLED": true,
+    "hasSpeaker": true,
+    "hasMicrophone": false,
+    "hasCamera": true,
+    "speakerDeviceId": "plughw:2,0"
+  },
+  {
+    "id": "88250c17.de9188",
+    "type": "wiotp-credentials",
+    "z": "",
+    "name": "",
+    "org": "1zehpa",
+    "serverName": "",
+    "devType": "tjbot",
+    "devId": "gamer",
+    "keepalive": "60",
+    "cleansession": true,
+    "tls": "",
+    "usetls": false
+  }
+]

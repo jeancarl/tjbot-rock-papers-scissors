@@ -1,0 +1,481 @@
+[
+  {
+    "id": "bdd05c69.d19508",
+    "type": "function",
+    "z": "b7b17fe5.242c5",
+    "name": "Determine Winner",
+    "func": "var scores = flow.get(\"score\")||{tie:0, tjbot:0, player:0};\nvar plays = flow.get(\"plays\")||[];\nvar moves = {\n    r:\"rock\",\n    p:\"paper\",\n    s:\"scissors\"\n};\n\nvar tjbotPicks = msg.payload.d.tjbot;\nvar player = msg.payload.d.player;\n\nswitch(tjbotPicks+player) {\n    case \"pp\":\n    case \"ss\":\n    case \"rr\":\n        scores.tie++;\n    break;\n    case \"ps\":\n    case \"rp\":\n    case \"sr\":\n        scores.player++;\n    break;\n    case \"sp\":\n    case \"rs\":\n    case \"pr\":\n        scores.tjbot++;\n    break;    \n}\n\nscores.lastPlayer = moves[player];\nscores.lastTJBot = moves[tjbotPicks];\n\n// Save play in the history\nplays.push({tjbot:moves[tjbotPicks], player:moves[player]});\n\nflow.set(\"score\", scores);\nflow.set(\"plays\", plays);\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 330,
+    "y": 400,
+    "wires": [
+      [
+        "ff110140.7eaba8",
+        "e280ebbc.d6211"
+      ]
+    ]
+  },
+  {
+    "id": "ff110140.7eaba8",
+    "type": "function",
+    "z": "b7b17fe5.242c5",
+    "name": "Display Score",
+    "func": "msg.payload = flow.get(\"score\")||{tie:0,tjbot:0,player:0};\n\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 520,
+    "y": 260,
+    "wires": [
+      [
+        "af9e150f.6a732",
+        "230e1489.892c4c",
+        "4aaf624f.bd0cd4",
+        "f41caa64.38ee08",
+        "1604b237.cd433e"
+      ]
+    ]
+  },
+  {
+    "id": "d023b6f.c82f9c8",
+    "type": "function",
+    "z": "b7b17fe5.242c5",
+    "name": "Reset Score",
+    "func": "flow.set(\"score\", {tie:0, tjbot:0, player:0, lastPlayer:\"\", lastTJBot:\"\"});\nflow.set(\"plays\", []);\nreturn msg;",
+    "outputs": 1,
+    "noerr": 0,
+    "x": 330,
+    "y": 260,
+    "wires": [
+      [
+        "ff110140.7eaba8",
+        "e280ebbc.d6211"
+      ]
+    ]
+  },
+  {
+    "id": "af9e150f.6a732",
+    "type": "ui_text",
+    "z": "b7b17fe5.242c5",
+    "group": "28dbbf02.eeb15",
+    "order": 1,
+    "width": "2",
+    "height": "1",
+    "name": "",
+    "label": "TJBot",
+    "format": "{{msg.payload.tjbot}}",
+    "layout": "col-center",
+    "x": 750,
+    "y": 180,
+    "wires": []
+  },
+  {
+    "id": "4aaf624f.bd0cd4",
+    "type": "ui_text",
+    "z": "b7b17fe5.242c5",
+    "group": "28dbbf02.eeb15",
+    "order": 2,
+    "width": "2",
+    "height": "1",
+    "name": "",
+    "label": "Ties",
+    "format": "{{msg.payload.tie}}",
+    "layout": "col-center",
+    "x": 750,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "230e1489.892c4c",
+    "type": "ui_text",
+    "z": "b7b17fe5.242c5",
+    "group": "28dbbf02.eeb15",
+    "order": 3,
+    "width": "2",
+    "height": "1",
+    "name": "",
+    "label": "Player",
+    "format": "{{msg.payload.player}}",
+    "layout": "col-center",
+    "x": 750,
+    "y": 260,
+    "wires": []
+  },
+  {
+    "id": "f41caa64.38ee08",
+    "type": "ui_text",
+    "z": "b7b17fe5.242c5",
+    "group": "7dedd9d7.6e3168",
+    "order": 2,
+    "width": "3",
+    "height": "1",
+    "name": "",
+    "label": "TJ Bot",
+    "format": "{{msg.payload.lastTJBot}}",
+    "layout": "col-center",
+    "x": 750,
+    "y": 300,
+    "wires": []
+  },
+  {
+    "id": "1604b237.cd433e",
+    "type": "ui_text",
+    "z": "b7b17fe5.242c5",
+    "group": "7dedd9d7.6e3168",
+    "order": 3,
+    "width": "3",
+    "height": "1",
+    "name": "",
+    "label": "Player",
+    "format": "{{msg.payload.lastPlayer}}",
+    "layout": "col-center",
+    "x": 750,
+    "y": 340,
+    "wires": []
+  },
+  {
+    "id": "10901a32.bb1876",
+    "type": "ibmiot out",
+    "z": "b7b17fe5.242c5",
+    "authentication": "boundService",
+    "apiKey": "",
+    "outputType": "cmd",
+    "deviceId": "gamer",
+    "deviceType": "tjbot",
+    "eventCommandType": "play_rps",
+    "format": "json",
+    "data": "{}",
+    "qos": 0,
+    "name": "IBM IoT",
+    "service": "registered",
+    "x": 320,
+    "y": 140,
+    "wires": []
+  },
+  {
+    "id": "3c43174.ab9e668",
+    "type": "ibmiot in",
+    "z": "b7b17fe5.242c5",
+    "authentication": "boundService",
+    "apiKey": "",
+    "inputType": "evt",
+    "deviceId": "gamer",
+    "applicationId": "",
+    "deviceType": "tjbot",
+    "eventType": "rps",
+    "commandType": "",
+    "format": "json",
+    "name": "IBM IoT",
+    "service": "registered",
+    "allDevices": true,
+    "allApplications": "",
+    "allDeviceTypes": "",
+    "allEvents": "",
+    "allCommands": "",
+    "allFormats": "",
+    "qos": 0,
+    "x": 130,
+    "y": 400,
+    "wires": [
+      [
+        "bdd05c69.d19508",
+        "c63584f0.7b745"
+      ]
+    ]
+  },
+  {
+    "id": "b721796.f0d8708",
+    "type": "ui_button",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "group": "7dedd9d7.6e3168",
+    "order": 4,
+    "width": "6",
+    "height": "1",
+    "passthru": false,
+    "label": "Play",
+    "color": "",
+    "bgcolor": "",
+    "icon": "",
+    "payload": "{}",
+    "payloadType": "json",
+    "topic": "",
+    "x": 130,
+    "y": 140,
+    "wires": [
+      [
+        "10901a32.bb1876",
+        "2c3ec4d0.560f0c"
+      ]
+    ]
+  },
+  {
+    "id": "44557a8d.fcfa94",
+    "type": "ui_template",
+    "z": "b7b17fe5.242c5",
+    "group": "28dbbf02.eeb15",
+    "name": "",
+    "order": 5,
+    "width": "6",
+    "height": "10",
+    "format": "<div ng-bind-html=\"msg.payload\">\n</div>",
+    "storeOutMessages": true,
+    "fwdInMessages": true,
+    "templateScope": "local",
+    "x": 960,
+    "y": 400,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "e280ebbc.d6211",
+    "type": "change",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "plays",
+        "tot": "flow"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "$reverse(msg.payload)",
+        "tot": "jsonata"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 580,
+    "y": 400,
+    "wires": [
+      [
+        "680e1927.20aa4"
+      ]
+    ]
+  },
+  {
+    "id": "680e1927.20aa4",
+    "type": "template",
+    "z": "b7b17fe5.242c5",
+    "name": "Compile Last Play List",
+    "field": "payload",
+    "fieldType": "msg",
+    "format": "handlebars",
+    "syntax": "mustache",
+    "template": "<table border=\"1\" width=\"100%\">\n        <tr>\n            <th>TJBot</th>\n            <th>Player</th>\n        </tr>    \n    {{#payload}}\n        <tr>\n            <td>{{tjbot}}</td>\n            <td>{{player}}</td>\n        </tr>\n    {{/payload}}\n</table>",
+    "output": "str",
+    "x": 780,
+    "y": 400,
+    "wires": [
+      [
+        "44557a8d.fcfa94"
+      ]
+    ]
+  },
+  {
+    "id": "66b452e6.034f1c",
+    "type": "ui_button",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "group": "28dbbf02.eeb15",
+    "order": 4,
+    "width": "6",
+    "height": "1",
+    "passthru": false,
+    "label": "Reset Scores",
+    "color": "",
+    "bgcolor": "",
+    "icon": "",
+    "payload": "",
+    "payloadType": "str",
+    "topic": "",
+    "x": 150,
+    "y": 260,
+    "wires": [
+      [
+        "d023b6f.c82f9c8"
+      ]
+    ]
+  },
+  {
+    "id": "21aa0c61.90ab24",
+    "type": "http in",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "url": "/picture",
+    "method": "post",
+    "upload": false,
+    "swaggerDoc": "",
+    "x": 150,
+    "y": 560,
+    "wires": [
+      [
+        "79314db8.a62a04",
+        "6247c99b.fa42f8"
+      ]
+    ]
+  },
+  {
+    "id": "48b10060.41c18",
+    "type": "http response",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "statusCode": "",
+    "headers": {},
+    "x": 490,
+    "y": 560,
+    "wires": []
+  },
+  {
+    "id": "79314db8.a62a04",
+    "type": "change",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "rules": [
+      {
+        "t": "set",
+        "p": "lastImage",
+        "pt": "flow",
+        "to": "payload",
+        "tot": "msg"
+      },
+      {
+        "t": "set",
+        "p": "payload",
+        "pt": "msg",
+        "to": "{\"status\":\"success\"}",
+        "tot": "json"
+      }
+    ],
+    "action": "",
+    "property": "",
+    "from": "",
+    "to": "",
+    "reg": false,
+    "x": 340,
+    "y": 560,
+    "wires": [
+      [
+        "48b10060.41c18"
+      ]
+    ]
+  },
+  {
+    "id": "6247c99b.fa42f8",
+    "type": "ui_template",
+    "z": "b7b17fe5.242c5",
+    "group": "7dedd9d7.6e3168",
+    "name": "",
+    "order": 1,
+    "width": "6",
+    "height": "5",
+    "format": "<div>\n    <img style=\"max-width: 100%\" src=\"data:image/jpeg;base64,{{msg.payload}}\"\n</div>",
+    "storeOutMessages": true,
+    "fwdInMessages": true,
+    "templateScope": "local",
+    "x": 320,
+    "y": 600,
+    "wires": [
+      []
+    ]
+  },
+  {
+    "id": "cd6e7de3.1027c8",
+    "type": "comment",
+    "z": "b7b17fe5.242c5",
+    "name": "Let's Play!",
+    "info": "",
+    "x": 140,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "3984059a.6b1e0a",
+    "type": "comment",
+    "z": "b7b17fe5.242c5",
+    "name": "Capture Picture of Player",
+    "info": "",
+    "x": 190,
+    "y": 520,
+    "wires": []
+  },
+  {
+    "id": "7b7c1a78.0d551c",
+    "type": "comment",
+    "z": "b7b17fe5.242c5",
+    "name": "Reset Play History",
+    "info": "",
+    "x": 170,
+    "y": 220,
+    "wires": []
+  },
+  {
+    "id": "7e37d915.1b3b6",
+    "type": "comment",
+    "z": "b7b17fe5.242c5",
+    "name": "Incoming Play",
+    "info": "",
+    "x": 150,
+    "y": 360,
+    "wires": []
+  },
+  {
+    "id": "c63584f0.7b745",
+    "type": "debug",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "active": false,
+    "console": "false",
+    "complete": "false",
+    "x": 310,
+    "y": 440,
+    "wires": []
+  },
+  {
+    "id": "2c3ec4d0.560f0c",
+    "type": "debug",
+    "z": "b7b17fe5.242c5",
+    "name": "",
+    "active": false,
+    "console": "false",
+    "complete": "true",
+    "x": 310,
+    "y": 100,
+    "wires": []
+  },
+  {
+    "id": "28dbbf02.eeb15",
+    "type": "ui_group",
+    "z": "",
+    "name": "History",
+    "tab": "d23ac0db.82324",
+    "disp": true,
+    "width": "6"
+  },
+  {
+    "id": "7dedd9d7.6e3168",
+    "type": "ui_group",
+    "z": "",
+    "name": "Last Play",
+    "tab": "d23ac0db.82324",
+    "disp": true,
+    "width": "6"
+  },
+  {
+    "id": "d23ac0db.82324",
+    "type": "ui_tab",
+    "z": "",
+    "name": "Rock Paper Scissors",
+    "icon": "dashboard",
+    "order": 1
+  }
+]
