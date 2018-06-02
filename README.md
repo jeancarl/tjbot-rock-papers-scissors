@@ -10,7 +10,7 @@ There are four components to this project. Node-RED running in the IBM Cloud, No
 
 ## Training Watson Visual Recognition
 
-The TJBot uses the Watson Visual Recognition service to classify the move in the image captured by the camera. The Watson service is trained with three sets of images: rock (closed hand), paper (flat hand), scissors (two fingers pointing, spread apart). It is recommended to have at least 50 images of each move, so ask your friends to give you a hand.
+The TJBot uses the Watson Visual Recognition service to classify the move in the image captured by the camera. The Watson service is trained with three sets of images: rock (closed hand), paper (flat hand), scissors (a fist with the index and middle fingers extended, forming a V). It is recommended to have at least 50 images of each move, so ask your friends to give you a hand.
 
 Create a new classifier in Watson Visual Recognition and upload the three zip files containing the images via the command line shown below. When trained, the service provides a classifier ID that can be used in the Node-RED application when calling the Watson Visual Recognition service.
 
@@ -42,7 +42,7 @@ In the Watson Internet of Things Platform service, I registered a device type of
 
 ## Node-RED on Raspberry Pi
 
-Keeping things in same language, I chose to use Node-RED on the Raspberry Pi running the TJBot. However, you can choose to subscribe to the IoT command in Python, Node.js, or another language and play the song that way.
+Keeping things in same language, I chose to use Node-RED on the Raspberry Pi running the TJBot. However, you can choose to subscribe to the IoT command in Python, Node.js, or another language and play the game that way.
 
 If you haven't installed the TJBot Node-RED nodes on the TJBot, please refer to this [blog post for instructions](http://ibm.biz/train-tjbot-series) on how to do so. Import the [JSON flow](tjbotflow.json). Here's what the Node-RED flow looks like.
 
