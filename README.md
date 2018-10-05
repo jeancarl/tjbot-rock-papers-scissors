@@ -12,10 +12,10 @@ There are four components to this project. Node-RED running in the IBM Cloud, No
 
 The TJBot uses the Watson Visual Recognition service to classify the move in the image captured by the camera. The Watson service is trained with three sets of images: rock (closed hand), paper (flat hand), scissors (a fist with the index and middle fingers extended, forming a V). It is recommended to have at least 50 images of each move, so ask your friends to give you a hand.
 
-Create a new classifier in Watson Visual Recognition and upload the three zip files containing the images via the command line shown below. When trained, the service provides a classifier ID that can be used in the Node-RED application when calling the Watson Visual Recognition service.
+Create a new classifier in Watson Visual Recognition and upload the three zip files containing the images via the command line shown below. Replace API_KEY in the command shown below with the IAM API key for the service. When trained, the service provides a classifier ID that can be used in the Node-RED application when calling the Watson Visual Recognition service.
 
 ```
-curl -X POST -F "scissor_positive_examples=@scissor.zip" -F "rock_positive_examples=@rock.zip" -F "paper_positive_examples=@paper.zip" "https://gateway-a.watsonplatform.net/visual-recognition/api/v3/classifiers?api_key=API_KEY&version=2016-05-20"
+curl -X POST -u "apikey:API_KEY" -F "scissor_positive_examples=@scissor.zip" -F "rock_positive_examples=@rock.zip" -F "paper_positive_examples=@paper.zip" -F "name=rockpaperscissor" "https://gateway.watsonplatform.net/visual-recognition/api/v3/classifiers?version=2018-03-19"
 ```
 
 ## Node-RED in IBM Cloud
